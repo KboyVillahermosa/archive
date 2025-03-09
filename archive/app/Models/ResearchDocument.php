@@ -16,7 +16,6 @@ class ResearchDocument extends Model
         'members',
         'abstract',
         'file_path',
-        'banner_image',
         'department',
     ];
 }
