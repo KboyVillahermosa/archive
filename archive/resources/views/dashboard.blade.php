@@ -73,7 +73,7 @@
     </div>
 
     <div id="pdfModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
-        class="hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-[100]">
+        class="hidden fixed top-0 right-0 left-0 z-50  justify-center items-center w-full h-[100]">
         <div class="relative p-4 w-full max-w-4xl h-[100]">
             <div class="relative bg-white w-full h-full rounded-lg shadow-sm dark:bg-gray-700 flex flex-col">
                 <div
