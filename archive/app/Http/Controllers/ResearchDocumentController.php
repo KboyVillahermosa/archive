@@ -15,14 +15,17 @@ class ResearchDocumentController extends Controller
         $documents = ResearchDocument::query();
     
         // Apply search filter if search parameter is provided
-        if ($request->has('search')) {
-            $documents->where('project_name', 'LIKE', '%' . $request->search . '%')
-                ->orWhere('members', 'LIKE', '%' . $request->search . '%')
-                ->orWhere('abstract', 'LIKE', '%' . $request->search . '%');
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $documents->where(function ($query) use ($searchTerm) {
+                $query->where('project_name', 'LIKE', "%{$searchTerm}%")
+                    ->orWhere('members', 'LIKE', "%{$searchTerm}%")
+                    ->orWhere('abstract', 'LIKE', "%{$searchTerm}%");
+            });
         }
     
         // Apply department filter if department parameter is provided
-        if ($request->has('department')) {
+        if ($request->filled('department')) {
             $documents->where('department', $request->department);
         }
     
@@ -32,6 +35,7 @@ class ResearchDocumentController extends Controller
         // Return the view with the documents data
         return view('dashboard', compact('documents'));
     }
+    
 
     // Method to approve a research document
     public function approve($id)
@@ -59,27 +63,40 @@ class ResearchDocumentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'project_name' => 'required',
-            'members' => 'required',
-            'abstract' => 'required',
-            'file' => 'required|mimes:pdf,docx',
-            'department' => 'required',
+            'title' => 'required|string|max:255',
+            'author' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'category' => 'required|string',
+            'document' => 'required|file|mimes:pdf,doc,docx|max:2048',
+            'banner' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048'
         ]);
-
-        // Store the uploaded file in the 'admin/admin_dashboard' directory
-        $filePath = $request->file('file')->store('admin/admin_dashboard', 'public');
-
-        // Create a new research document record
-        ResearchDocument::create([
-            'project_name' => $request->project_name,
-            'members' => $request->members,
-            'abstract' => $request->abstract,
-            'file_path' => $filePath,
-            'department' => $request->department,
-        ]);
-
-        return redirect()->route('dashboard');
+    
+        $documentPath = null;
+        $bannerPath = null;
+    
+        // Handle document upload
+        if ($request->hasFile('document')) {
+            $documentPath = $request->file('document')->store('documents', 'public');
+        }
+    
+        // Handle banner upload
+        if ($request->hasFile('banner')) {
+            $bannerPath = $request->file('banner')->store('banners', 'public');
+        }
+    
+        // Store in database
+        $research = new ResearchDocument();
+        $research->title = $request->title;
+        $research->author = $request->author;
+        $research->description = $request->description;
+        $research->category = $request->category;
+        $research->document = $documentPath;
+        $research->banner = $bannerPath;
+        $research->save();
+    
+        return redirect()->back()->with('success', 'Research document uploaded successfully!');
     }
+    
 
     // Method to download a research document
     public function download($id)
@@ -103,4 +120,7 @@ class ResearchDocumentController extends Controller
         // Return the admin view and pass the research documents
         return view('admin.dashboard', compact('researches'));
     }
+
+
+    
 }

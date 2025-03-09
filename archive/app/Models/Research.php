@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Research extends Model
 {
     protected $fillable = [
-        'project_name', 'members', 'abstract', 'document', 'department', 'approved'
+        'project_name', 'members', 'abstract', 'document',  'banner_image', 'department', 'approved'
     ];
     
 }
