@@ -15,7 +15,23 @@
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
-
+      <!-- Department -->
+        <div class="mt-4">
+            <x-input-label for="department" :value="__('Department')" />
+            <select id="department" name="department"
+                class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                required>
+                <option value="">Select Department</option>
+                <option value="BSIT">BSIT - Bachelor of Science in Information Technology</option>
+                <option value="BSCS">BSCS - Bachelor of Science in Computer Science</option>
+                <option value="BSECE">BSECE - Bachelor of Science in Electronics Engineering</option>
+                <option value="BSBA">BSBA - Bachelor of Science in Business Administration</option>
+                <option value="BSN">BSN - Bachelor of Science in Nursing</option>
+                <option value="BSED">BSED - Bachelor of Secondary Education</option>
+            </select>
+            <x-input-error :messages="$errors->get('department')" class="mt-2" />
+        </div>
+   
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password')" />
